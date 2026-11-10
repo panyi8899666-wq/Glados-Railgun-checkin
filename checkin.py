@@ -100,6 +100,8 @@ class Config:
     ENV_PUSH_KEY = "PUSHDEER_SENDKEY"
     ENV_SERVERCHAN_KEY = "SERVERCHAN_SENDKEY"
     ENV_COOKIES = "GLADOS_COOKIES"
+    ENV_RAILGUN_COOKIES = "RAILGUN_COOKIES"
+    
     ENV_EXCHANGE_PLAN = "GLADOS_EXCHANGE_PLAN"
     ENV_VERBOSE = "GLADOS_VERBOSE"
 
@@ -110,7 +112,7 @@ class Config:
     DEFAULT_VERBOSE = False
 
     """默认域名"""
-    DOMAINS = ["glados.network"]
+    DOMAINS = ["glados.network", "railgun.info"]
 
     """兑换计划列表"""
     EXCHANGE_PLANS = {
@@ -154,6 +156,11 @@ class Config:
             self.cookies_list = [cookie.strip() for cookie in raw_cookies_env.split("&") if cookie.strip()]
             if not self.cookies_list:
                 raise ValueError(f"环境变量 '{self.ENV_COOKIES}' 已设置，但未包含任何有效的 Cookie。")
+
+        raw_railgun_cookies_env: Optional[str] = os.environ.get(self.ENV_RAILGUN_COOKIES)
+        if raw_railgun_cookies_env:
+            railgun_cookies = [cookie.strip() for cookie in raw_railgun_cookies_env.split("&") if cookie.strip()]
+            self.cookies_list.extend(railgun_cookies)
 
         if not exchange_plan_env:
             logger.warning(f"{LogEmoji.WARNING} 环境变量 '{self.ENV_EXCHANGE_PLAN}' 未设置，将使用默认设置（不自动兑换）。")
